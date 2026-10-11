@@ -2,6 +2,7 @@
 
 import {useEffect,useState} from 'react'
 import {usePathname} from 'next/navigation'
+import BrandLogo from '@/components/BrandLogo'
 
 export default function PageSplash(){
  const pathname=usePathname()
@@ -14,7 +15,7 @@ export default function PageSplash(){
  },[pathname])
 
  return <div className={`page-splash${visible?' is-visible':''}`} aria-hidden={!visible}>
-  <img src="/fyxnora-logo-transparent.png" alt="" className="page-splash-logo"/>
+  <BrandLogo className="page-splash-logo brand-logo--adaptive"/>
   <span className="visually-hidden" role="status">{visible?'Loading Fyxnora':''}</span>
  </div>
 }

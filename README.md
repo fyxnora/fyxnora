@@ -5,6 +5,7 @@ This is an original Fyxnora application with a guided appointment, technician vi
 ## Delivered features
 - Responsive customer homepage with uploaded Fyxnora logo, categories and repair flow.
 - Registration with an SMTP-delivered email OTP, welcome email with the customer repair-stage PDF guide, and Supabase Auth email/password sign-in.
+- Login password recovery with an SMTP-delivered one-time code, email verification and a new-password confirmation step.
 - Customer booking (mobile/laptop, brand/model, issue, address, preferred pickup date).
 - Customer tracking: statuses, event history, quotation, approve/reject.
 - Technician portal: assigned jobs, schedule visit, record pickup handover, transit and delivery.

@@ -4,7 +4,25 @@ import {CheckCircle2,ClipboardList,LayoutDashboard,LifeBuoy,Plus,UserRound} from
 import type {BookingEvent} from '@/lib/repair-tracking'
 export type Booking={id:string;reference:string;customer_id:string;category:string;brand:string;model:string;issue:string;city:string;state:string;country:string;pincode:string;address:string;location_latitude:number|null;location_longitude:number|null;preferred_date:string|null;status:string;partner_id:string|null;technician_id:string|null;regional_id:string|null;quoted_amount:number|null;estimated_amount:number|null;quote_details:string|null;created_at:string;updated_at:string}
 export type Profile={id:string;role:Role;full_name:string;email:string;phone:string|null;region_id:string|null;partner_id:string|null}
-export function usePortal(expected?:Role){const [profile,setProfile]=useState<Profile|null>(null),[orders,setOrders]=useState<Booking[]>([]),[people,setPeople]=useState<Profile[]>([]),[events,setEvents]=useState<BookingEvent[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState('');const router=useRouter();async function reload(){try{const data=await authedFetch('/api/bookings',undefined,'GET');if(expected&&data.profile.role!==expected){router.replace(sections.find(x=>x.role===data.profile.role)?.href||'/dashboard');return}setProfile(data.profile);setOrders(data.bookings||[]);setPeople(data.people||[]);setEvents(data.events||[])}catch(e){if(String(e).includes('log in'))router.replace('/login');else setError(e instanceof Error?e.message:String(e))}finally{setLoading(false)}}useEffect(()=>{void reload()},[]);return {profile,orders,people,events,loading,error,reload}}
+export function usePortal(expected?:Role){
+ const [profile,setProfile]=useState<Profile|null>(null),[orders,setOrders]=useState<Booking[]>([]),[people,setPeople]=useState<Profile[]>([]),[events,setEvents]=useState<BookingEvent[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState('')
+ const router=useRouter()
+ async function reload(){
+  try{
+   const data=await authedFetch('/api/bookings',undefined,'GET')
+   if(expected&&data.profile.role!==expected){router.replace(sections.find(x=>x.role===data.profile.role)?.href||'/dashboard');return}
+   setProfile(data.profile)
+   setOrders(data.bookings||[])
+   setPeople(data.people||[])
+   setEvents(data.events||[])
+  }catch(e){
+   if(String(e).includes('log in'))router.replace(expected==='admin'?'/login?next=%2Fadmin':'/login')
+   else setError(e instanceof Error?e.message:String(e))
+  }finally{setLoading(false)}
+ }
+ useEffect(()=>{void reload()},[])
+ return {profile,orders,people,events,loading,error,reload}
+}
 export function Shell({role,children}:{role:Role;children:React.ReactNode}){
  if(role==='customer')return <div className="customer-record-shell"><nav className="customer-workspace-nav" aria-label="Customer dashboard"><Link className="workspace-nav-card" href="/dashboard#repairs"><span><CheckCircle2/></span><b>My repairs</b></Link><Link className="workspace-nav-card" href="/book"><span><Plus/></span><b>Book a repair</b></Link><button className="workspace-nav-card" onClick={()=>document.querySelector<HTMLButtonElement>('[aria-label="Open account settings"]')?.click()}><span><UserRound/></span><b>My profile</b></button><Link className="workspace-nav-card" href="/contact"><span><LifeBuoy/></span><b>Help &amp; support</b></Link></nav><main className="main customer-detail-main">{children}</main></div>
  const dashboard=sections.find(section=>section.role===role)

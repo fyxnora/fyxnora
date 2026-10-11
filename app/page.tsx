@@ -1,25 +1,38 @@
 import Link from 'next/link'
-import {ArrowRight,CheckCircle2,Clock3,IndianRupee,MapPin,ShieldCheck,Sparkles,Star,Truck,Wrench} from 'lucide-react'
+import {ArrowRight,CheckCircle2,Clock3,ShieldCheck,Sparkles,Star} from 'lucide-react'
 import DeviceArtwork from '@/components/DeviceArtwork'
 
 const services=[['Mobile','Screens, batteries, charging and more'],['Tablet','Display, battery and board repair'],['Laptop','Screen, keyboard and motherboard'],['Smart Watch','Display, battery and sensor repair'],['AirPods','Battery, charging and audio repair'],['Desktop','Hardware, upgrades and diagnosis']]
-const promises=[['Upfront estimates','See the expected repair cost before you book.'],['Tracked service','Follow pickup, diagnosis, quotation and delivery.'],['Protected handovers','OTP verification and condition records at every transfer.']]
 
-export default function Home(){return <>
- <main>
-  <section className="public-hero"><div className="shell hero">
-   <div className="hero-copy"><div className="eyebrow"><Sparkles/> TRUSTED DOORSTEP DEVICE REPAIR</div><h1>Expert gadget repair.<br/><span className="gradient">Without the guesswork.</span></h1><p>Choose your exact device and repair, see a clear estimate, and track every step from doorstep pickup to safe delivery.</p><div className="actions hero-actions"><Link className="button" href="/book">Book a repair <ArrowRight/></Link><Link className="button secondary" href="/dashboard">Track my repair</Link></div><div className="hero-proof"><div><span className="proof-icons"><ShieldCheck/><CheckCircle2/><Star/></span><p><b>Transparent and accountable</b><small>Digital records for every repair milestone</small></p></div></div></div>
-   <div className="hero-art"><div className="hero-art-badge"><span><Clock3/></span><div><b>Live repair tracking</b><small>Updates at every stage</small></div></div><div className="hero-device-stage"><DeviceArtwork category="Mobile" brand="Apple" model="iPhone Pro" className="hero-phone-art"/><DeviceArtwork category="Laptop" brand="Samsung" model="Galaxy Book" className="hero-laptop-art"/></div><div className="card hero-process-card"><strong>Device <i/> Brand <i/> Model <i/> Repair <i/> Price</strong><p className="smalltext">A guided booking journey in minutes.</p></div></div>
-  </div></section>
+function ArchitectureBackdrop(){return <div className="architecture-backdrop" aria-hidden="true"><span className="architecture-frame"/><span className="architecture-building"/><span className="architecture-route"/></div>}
 
-  <section className="trust-strip"><div className="shell"><div><Truck/><span><b>Doorstep convenience</b><small>Pickup and delivery options</small></span></div><div><IndianRupee/><span><b>Clear estimates</b><small>No unexplained surprises</small></span></div><div><ShieldCheck/><span><b>Service protection</b><small>Recorded digital workflow</small></span></div><div><MapPin/><span><b>Local support</b><small>Verified service network</small></span></div></div></section>
+export default function Home(){
+ return <main>
+  <section className="public-hero architecture-scene">
+   <ArchitectureBackdrop/>
+   <div className="shell hero">
+    <div className="hero-copy">
+     <div className="eyebrow"><Sparkles/> TRUSTED DOORSTEP DEVICE REPAIR</div>
+     <h1>Expert gadget repair.<br/><span className="gradient">Without the<span className="hero-mobile-break"> </span> guesswork.</span></h1>
+     <p>Choose your device, see a clear estimate and track every step from doorstep pickup to safe delivery.</p>
+     <div className="actions hero-actions">
+      <Link className="button" href="#services">Book a repair <ArrowRight/></Link>
+      <Link className="button secondary" href="/dashboard">Track my repair</Link>
+     </div>
+     <div className="hero-proof"><div><span className="proof-icons"><ShieldCheck/><CheckCircle2/><Star/></span><p><b>Transparent and accountable</b><small>Digital records for every repair milestone</small></p></div></div>
+    </div>
+    <div className="hero-art">
+     <div className="hero-art-badge"><span><Clock3/></span><div><b>Live repair tracking</b><small>Updates at every stage</small></div></div>
+     <div className="hero-device-stage"><DeviceArtwork category="Mobile" brand="Apple" model="iPhone Pro" className="hero-phone-art"/><DeviceArtwork category="Laptop" brand="Samsung" model="Galaxy Book" className="hero-laptop-art"/></div>
+     <div className="card hero-process-card"><strong>Device <i/> Brand <i/> Model <i/> Repair <i/> Price</strong><p className="smalltext">A guided booking journey in minutes.</p></div>
+    </div>
+   </div>
+  </section>
 
-  <section className="shell section public-services" id="services"><div className="public-section-head"><div><div className="eyebrow">Repair services</div><h2 className="section-title">What can we fix for you today?</h2><p className="muted">Select your device category to view brands, models, repair options and estimated prices.</p></div><Link href="/book">View all repairs <ArrowRight/></Link></div><div className="grid3 repair-category-home">{services.map(([title,detail])=><Link className="card" key={title} href="/book"><div className="service-art"><DeviceArtwork category={title}/></div><div><h3>{title}</h3><p className="muted">{detail}</p><span>Get an estimate <ArrowRight/></span></div></Link>)}</div></section>
-
-  <section className="public-process" id="how"><div className="shell"><div className="public-section-head centered"><div><div className="eyebrow">Simple · Safe · Transparent</div><h2 className="section-title">Repair support built around you</h2><p className="muted">From selection to delivery, every stage is clear and easy to follow.</p></div></div><div className="steps">{[['1','Choose your repair','Select device type, brand, model and required services.'],['2','Review your estimate','See individual service prices and the expected total.'],['3','Schedule pickup','Add your location and choose a convenient service date.'],['4','Track every update','Approve the final quote and follow the repair timeline.']].map(([n,t,d],index)=><div className="card process-card" key={n}><div className="stepnum">{n}</div>{index<3&&<span className="step-connector"/>}<h3>{t}</h3><p className="muted">{d}</p></div>)}</div></div></section>
-
-  <section className="shell section public-why"><div className="why-visual"><DeviceArtwork category="Laptop" brand="Apple" model="MacBook Pro"/><span className="why-float"><ShieldCheck/> Protected service journey</span></div><div><div className="eyebrow">Why Fyxnora</div><h2 className="section-title">A repair experience you can actually follow.</h2><p className="muted">Ordinary repair shops leave customers waiting for updates. Fyxnora keeps the complete service history visible in your account.</p><div className="promise-list">{promises.map(([title,detail])=><div key={title}><CheckCircle2/><span><b>{title}</b><small>{detail}</small></span></div>)}</div><Link className="button" href="/book"><Wrench/> Start a repair</Link></div></section>
-
-  <section className="public-cta"><div className="shell"><div><span>Ready when you are</span><h2>Bring your device back to life.</h2><p>Choose the model, select the repair and get your estimate now.</p></div><Link className="button" href="/book">Book your repair <ArrowRight/></Link></div></section>
+  <section className="shell section public-services architecture-scene" id="services">
+   <ArchitectureBackdrop/>
+   <div className="public-section-head"><div><div className="eyebrow">Repair services</div><h2 className="section-title">What can we fix for you today?</h2><p className="muted">Choose a device category to view available brands, models, repairs and estimates.</p></div></div>
+   <div className="grid3 repair-category-home">{services.map(([title,detail])=><Link className="card" key={title} href={`/book?category=${encodeURIComponent(title)}`}><div className="service-art"><DeviceArtwork category={title}/></div><div><h3>{title}</h3><p className="muted">{detail}</p><span>Choose this device <ArrowRight/></span></div></Link>)}</div>
+  </section>
  </main>
- </>}
+}

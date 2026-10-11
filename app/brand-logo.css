@@ -1,0 +1,71 @@
+.brand-logo {
+ position:relative;
+ display:block!important;
+ flex:none;
+ aspect-ratio:827 / 209;
+ overflow:hidden;
+}
+.brand-logo img {
+ position:absolute!important;
+ inset:0;
+ width:100%!important;
+ height:100%!important;
+ object-fit:contain;
+ filter:none!important;
+ mix-blend-mode:normal!important;
+}
+.brand-logo--header {width:156px}
+.brand-logo--footer {width:175px}
+.brand-logo--portal {width:100%;max-width:170px}
+.brand-logo--night .brand-logo-day,
+.brand-logo--adaptive .brand-logo-night,
+.brand-logo-mark {display:none}
+[data-theme="dark"] .brand-logo--adaptive .brand-logo-day,
+[data-theme="dark"] .brand-logo--night .brand-logo-day {display:none}
+[data-theme="dark"] .brand-logo--adaptive .brand-logo-night,
+[data-theme="dark"] .brand-logo--night .brand-logo-night,
+.brand-logo--night .brand-logo-night {display:block}
+.brand {
+ align-items:center;
+ flex:none;
+ line-height:0;
+}
+.footer-brand>.brand-logo {
+ display:block!important;
+ gap:0!important;
+}
+.admin-wordmark,
+.ops-brand,
+.customer-side-brand {
+ display:flex!important;
+ align-items:center;
+ justify-content:center;
+ background:transparent!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ overflow:visible!important;
+}
+.admin-wordmark::after,
+.ops-brand::after,
+.customer-side-brand::after {display:none!important}
+.admin-wordmark .brand-logo--adaptive .brand-logo-day,
+.ops-brand .brand-logo--adaptive .brand-logo-day,
+.customer-side-brand .brand-logo--adaptive .brand-logo-day {display:none!important}
+.admin-wordmark .brand-logo--adaptive .brand-logo-night,
+.ops-brand .brand-logo--adaptive .brand-logo-night,
+.customer-side-brand .brand-logo--adaptive .brand-logo-night {display:block!important}
+.admin-wordmark {height:48px;padding:0;margin:0 1px 17px}
+.ops-brand {height:48px;padding:0;margin:0 0 17px}
+.customer-side-brand {height:48px;padding:0;margin:0 1px 17px}
+.page-splash-logo {width:min(240px,68vw);height:auto}
+@media(max-width:1050px) {
+ .brand-logo--portal {width:42px;height:42px;aspect-ratio:1;max-width:none}
+ .brand-logo--portal .brand-logo-day,
+ .brand-logo--portal .brand-logo-night {display:none!important}
+ .brand-logo--portal .brand-logo-mark {display:block!important}
+}
+@media(max-width:575px) {
+ .brand-logo--header {width:125px}
+ .footer-brand>.brand-logo {width:175px}
+}

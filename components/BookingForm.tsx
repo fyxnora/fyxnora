@@ -44,7 +44,7 @@ export default function BookingForm(){
  const router=useRouter()
 
  useEffect(()=>{
-  fetch('/api/catalog').then(async response=>{const data=await response.json();if(!response.ok||data.error)throw Error(data.error||'Unable to load the repair catalog');setCatalog(data)}).catch(error=>setMessage(error instanceof Error?error.message:'Unable to load the repair catalog'))
+  fetch('/api/catalog').then(async response=>{const data=await response.json();if(!response.ok||data.error)throw Error(data.error||'Unable to load the repair catalog');setCatalog(data);const requestedCategory=new URLSearchParams(window.location.search).get('category');if(requestedCategory){const match=data.categories.find((item:Item)=>item.name.toLowerCase()===requestedCategory.toLowerCase());if(match){setForm(current=>current.categoryId?current:{...current,categoryId:match.id});setStep(current=>current===0?1:current)}}}).catch(error=>setMessage(error instanceof Error?error.message:'Unable to load the repair catalog'))
   try{
    const raw=sessionStorage.getItem('fyxnora-booking-draft')
    if(raw){const draft=JSON.parse(raw) as Draft;if(draft.form&&draft.step===4){setForm({...initialForm,...draft.form});setLocationPinned(draft.form.latitude!=null&&draft.form.longitude!=null);setStep(4)}}

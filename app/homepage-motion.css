@@ -1,0 +1,144 @@
+.architecture-scene {
+ position:relative;
+ isolation:isolate;
+ overflow:hidden;
+}
+.architecture-backdrop {
+ position:absolute;
+ inset:0;
+ z-index:0;
+ overflow:hidden;
+ pointer-events:none;
+ opacity:.65;
+ background-image:
+  linear-gradient(to right,rgba(26,187,156,.09) 1px,transparent 1px),
+  linear-gradient(to bottom,rgba(26,187,156,.09) 1px,transparent 1px);
+ background-size:52px 52px;
+ mask-image:linear-gradient(115deg,transparent 0%,#000 35%,#000 78%,transparent 100%);
+ animation:blueprint-pan 38s linear infinite;
+}
+.architecture-scene>*:not(.architecture-backdrop) {
+ position:relative;
+ z-index:1;
+}
+.architecture-frame {
+ position:absolute;
+ top:-190px;
+ right:8%;
+ width:min(52vw,650px);
+ aspect-ratio:1;
+ border:1px solid rgba(26,187,156,.16);
+ border-radius:50%;
+ box-shadow:0 0 0 34px rgba(26,187,156,.025),0 0 0 70px rgba(26,187,156,.02);
+ animation:blueprint-orbit 44s linear infinite;
+}
+.architecture-building {
+ position:absolute;
+ top:18%;
+ right:17%;
+ width:clamp(100px,13vw,190px);
+ height:clamp(165px,24vw,315px);
+ border:1px solid rgba(32,107,196,.18);
+ background:
+  repeating-linear-gradient(90deg,transparent 0 23%,rgba(32,107,196,.07) 23.5% 24.5%,transparent 25% 49%),
+  repeating-linear-gradient(0deg,transparent 0 16%,rgba(32,107,196,.07) 16.5% 17.5%,transparent 18% 32%);
+ transform:skewY(-18deg);
+ animation:blueprint-float 8s ease-in-out infinite;
+}
+.architecture-building::before,
+.architecture-building::after {
+ content:"";
+ position:absolute;
+ border:1px solid rgba(32,107,196,.13);
+}
+.architecture-building::before {
+ inset:12% 13%;
+ background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(32,107,196,.09) 23px 24px);
+}
+.architecture-building::after {
+ top:-12px;
+ right:-13px;
+ width:12px;
+ height:100%;
+ border-left:0;
+ transform:skewY(35deg);
+}
+.architecture-route {
+ position:absolute;
+ left:6%;
+ bottom:19%;
+ width:48%;
+ border-top:1px dashed rgba(26,187,156,.24);
+ transform:rotate(-12deg);
+ transform-origin:left center;
+ animation:blueprint-trace 7s ease-in-out infinite alternate;
+}
+.architecture-route::before,
+.architecture-route::after {
+ content:"";
+ position:absolute;
+ top:-4px;
+ width:7px;
+ height:7px;
+ border:1px solid rgba(26,187,156,.4);
+ border-radius:50%;
+ background:var(--tblr-bg,#f7f7f7);
+}
+.architecture-route::before {left:8%}
+.architecture-route::after {right:5%}
+.architecture-scene .hero {min-height:570px}
+.hero-mobile-break {display:none}
+.public-services {scroll-margin-top:90px}
+[data-theme="dark"] .architecture-backdrop {
+ opacity:.48;
+ background-image:
+  linear-gradient(to right,rgba(90,198,210,.11) 1px,transparent 1px),
+  linear-gradient(to bottom,rgba(90,198,210,.11) 1px,transparent 1px);
+}
+[data-theme="dark"] .architecture-frame {border-color:rgba(90,198,210,.18)}
+[data-theme="dark"] .architecture-building {border-color:rgba(90,198,210,.2)}
+[data-theme="dark"] .architecture-route {border-color:rgba(90,198,210,.25)}
+[data-theme="dark"] .public-services .section-title,
+[data-theme="dark"] .public-services .card h3 {color:#e6ebf2}
+[data-theme="dark"] .public-services .card {
+ background:var(--tblr-surface);
+ border-color:#344154;
+ color:#e6ebf2;
+}
+[data-theme="dark"] .public-services .card p {color:#b0bdca}
+[data-theme="dark"] .public-services .service-art {background:#243244}
+@keyframes blueprint-pan {
+ from {background-position:0 0,0 0}
+ to {background-position:104px 52px,52px 104px}
+}
+@keyframes blueprint-orbit {
+ from {transform:rotate(0deg)}
+ to {transform:rotate(360deg)}
+}
+@keyframes blueprint-float {
+ 0%,100% {translate:0 0}
+ 50% {translate:0 -11px}
+}
+@keyframes blueprint-trace {
+ from {translate:0 0;opacity:.45}
+ to {translate:14px -7px;opacity:1}
+}
+@media(max-width:767px) {
+ .architecture-scene .hero {min-height:0}
+ .architecture-building {right:8%;top:14%;opacity:.55}
+ .architecture-frame {right:-24%;top:-120px}
+ .architecture-route {bottom:8%;width:72%}
+ .architecture-backdrop {opacity:.42}
+}
+@media(max-width:575px) {
+ .hero-copy h1 {font-size:clamp(28px,8vw,32px);letter-spacing:-1.6px}
+ .hero-mobile-break {display:block}
+}
+@media(prefers-reduced-motion:reduce) {
+ .architecture-backdrop,
+ .architecture-frame,
+ .architecture-building,
+ .architecture-route {
+  animation:none!important;
+ }
+}
