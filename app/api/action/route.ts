@@ -2,6 +2,7 @@ import {NextRequest,NextResponse} from 'next/server'
 import {z} from 'zod'
 import {publicClient,adminClient} from '@/lib/supabase'
 import {emailShell,escapeHtml,sendConfiguredEmail} from '@/lib/mailer'
+import {createRoleWorkflowPdf} from '@/lib/role-workflow-pdf'
 
 async function notifyBooking(db:ReturnType<typeof adminClient>,booking:Record<string,unknown>,subject:string,description:string){
  const {data:customer,error:customerError}=await db.from('profiles').select('email,full_name').eq('id',String(booking.customer_id)).single()
@@ -12,7 +13,9 @@ async function notifyBooking(db:ReturnType<typeof adminClient>,booking:Record<st
    to:customer.email,
    includeInternal:true,
    subject,
-   html:emailShell(subject,`<p>Hello ${escapeHtml(customer.full_name||'Customer')},</p><p><strong>Repair ${escapeHtml(String(booking.reference))}</strong></p><p>${escapeHtml(description)}</p><p>Current status: <strong>${escapeHtml(String(booking.status).replaceAll('_',' '))}</strong></p>`)
+   html:emailShell(subject,`<p>Hello ${escapeHtml(customer.full_name||'Customer')},</p><p><strong>Repair ${escapeHtml(String(booking.reference))}</strong></p><p>${escapeHtml(description)}</p><p>Current status: <strong>${escapeHtml(String(booking.status).replaceAll('_',' '))}</strong></p><p>Updated: ${escapeHtml(new Date(String(booking.updated_at||booking.created_at||new Date().toISOString())).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}))}</p><p>Your attached workflow guide lists completed and upcoming repair stages.</p>`),
+   text:`Hello ${customer.full_name||'Customer'}, repair ${String(booking.reference)} has an update: ${description}. Current status: ${String(booking.status).replaceAll('_',' ')}. Updated: ${new Date(String(booking.updated_at||booking.created_at||new Date().toISOString())).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}. The attached workflow guide lists all repair stages.`,
+   attachments:[{filename:'fyxnora-repair-workflow-guide.pdf',content:Buffer.from(await createRoleWorkflowPdf()),contentType:'application/pdf'}]
   })
  }catch(error){
   mailError=error
@@ -40,8 +43,12 @@ const bookingSchema=z.object({
  repair_service_ids:z.array(z.string().uuid()).min(1).max(20),
  estimated_amount:z.number().nonnegative().max(10000000),
  city:z.string().trim().min(2).max(80),
+ state:z.string().trim().min(2).max(100),
+ country:z.string().trim().min(2).max(100),
  pincode:z.string().regex(/^[1-9][0-9]{5}$/),
  address:z.string().trim().min(10).max(1000),
+ latitude:z.number().min(-90).max(90).nullable().optional(),
+ longitude:z.number().min(-180).max(180).nullable().optional(),
  phone:z.string().regex(/^[6-9][0-9]{9}$/),
  preferred_date:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
  consent:z.literal(true)
@@ -89,13 +96,13 @@ export async function POST(req:NextRequest){
    const parsed=bookingSchema.safeParse(body)
    if(!parsed.success)return NextResponse.json({error:parsed.error.issues[0].message},{status:400})
    if(profile.role!=='customer')return NextResponse.json({error:'Only customer accounts can book'},{status:403})
-   const {category,brand,model,issue,city,pincode,address,phone,preferred_date,model_id,repair_service_ids}=parsed.data
+   const {category,brand,model,issue,city,state,country,pincode,address,phone,preferred_date,model_id,repair_service_ids,latitude,longitude}=parsed.data
    const {data:catalogModel,error:modelError}=await db.from('device_models').select('id').eq('id',model_id).eq('active',true).single()
    if(modelError||!catalogModel)return NextResponse.json({error:'Selected device model is unavailable.'},{status:400})
    const {data:catalogPrices,error:priceError}=await db.from('model_repair_prices').select('repair_service_id,price,discount_price').eq('model_id',model_id).eq('active',true).in('repair_service_id',repair_service_ids)
    if(priceError||!catalogPrices||catalogPrices.length!==repair_service_ids.length)return NextResponse.json({error:'One or more repair services are unavailable.'},{status:400})
    const estimated_amount=catalogPrices.reduce((total,item)=>total+Number(item.discount_price??item.price),0)
-   const values={category,brand,model,issue,city,pincode,address,phone,preferred_date,model_id,repair_service_ids,estimated_amount}
+   const values={category,brand,model,issue,city,state,country,pincode,address,phone,preferred_date,model_id,repair_service_ids,estimated_amount,location_latitude:latitude??null,location_longitude:longitude??null}
    const {data:booking,error}=await db.from('bookings').insert({...values,customer_id:user.id,status:'BOOKED'}).select().single()
    if(error)throw error
    const {error:eventError}=await db.from('booking_events').insert({booking_id:booking.id,actor_id:user.id,kind:'BOOKED',description:'Repair booking requested by customer'})

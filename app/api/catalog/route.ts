@@ -9,7 +9,7 @@ export async function GET(){
   const [categories,brands,models,services,pricesPageOne,pricesPageTwo]=await Promise.all([
    db.from('service_categories').select('id,name,sort_order').eq('active',true).order('sort_order'),
    db.from('device_brands').select('id,category_id,name,sort_order').eq('active',true).order('sort_order'),
-   db.from('device_models').select('id,brand_id,name,model_code,sort_order').eq('active',true).order('sort_order'),
+   db.from('device_models').select('id,brand_id,name,model_code,image_url,sort_order').eq('active',true).order('sort_order'),
    db.from('repair_services').select('id,name,description,default_duration_minutes,default_warranty_months,sort_order').eq('active',true).order('sort_order'),
    db.from('model_repair_prices').select('id,model_id,repair_service_id,price,discount_price,doorstep_available').eq('active',true).range(0,999),
    db.from('model_repair_prices').select('id,model_id,repair_service_id,price,discount_price,doorstep_available').eq('active',true).range(1000,1999)

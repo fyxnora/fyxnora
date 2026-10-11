@@ -121,5 +121,40 @@ export async function createRoleWorkflowPdf(){
  y=drawCard(page,y,'Protect account access',['The six-digit email code expires after 10 minutes, allows up to five guesses, and can only be resent after the cooldown.','Admin invitations and password resets use one-time links; the recipient chooses their own password.','Only active administrators may change roles. The final active admin cannot disable or demote itself or another final administrator.'],bold,regular,blue)
  drawCard(page,y,'Operational handoffs',['The technician records pickup and delivery verification references in the order timeline.','The customer receives each booking milestone at their registered email.'],bold,regular,teal)
 
+ page=makePage(document,'Customer repair tracking','Milestones, timestamps and pending stages',5,bold,regular)
+ page.drawText('The dashboard and email updates show the latest recorded time. Stages not reached yet remain marked as upcoming.',{x:42,y:pageHeight-132,size:9,font:regular,color:muted})
+ const customerStages=[
+  ['BOOKED','Request received and waiting for assignment.'],
+  ['ASSIGNED','A service partner, technician or regional owner is assigned.'],
+  ['VISIT_SCHEDULED','Pickup visit is scheduled.'],
+  ['PICKUP_VERIFIED','Technician records the device handover.'],
+  ['IN_TRANSIT','Device is travelling to the service centre.'],
+  ['RECEIVED_AT_CENTRE','Service centre confirms device receipt.'],
+  ['DIAGNOSIS','Device inspection and fault diagnosis are underway.'],
+  ['QUOTE_SENT','Repair estimate is ready for customer review.'],
+  ['CUSTOMER_APPROVED','Customer approves the quoted repair.'],
+  ['REPAIRING','Approved repair work is in progress.'],
+  ['QUALITY_CHECK','Completed repair is undergoing quality checks.'],
+  ['READY_FOR_DELIVERY','Device passed checks and is ready to return.'],
+  ['OUT_FOR_DELIVERY','Technician is returning the device.'],
+  ['DELIVERED','Device handover is complete; customer may close the order.'],
+  ['CLOSED','Repair request is complete.']
+ ]
+ let stageY=pageHeight-151
+ for(let index=0;index<customerStages.length;index++){
+  const [status,description]=customerStages[index]
+  const rowHeight=32
+  const rowBottom=stageY-rowHeight
+  page.drawRectangle({x:42,y:rowBottom,width:pageWidth-84,height:rowHeight,color:index%2===0?pale:white,borderColor:rgb(.87,.91,.95),borderWidth:.5})
+  page.drawCircle({x:56,y:rowBottom+16,size:8,color:index===0?teal:blue})
+  page.drawText(String(index+1).padStart(2,'0'),{x:51.3,y:rowBottom+13.2,size:6.5,font:bold,color:white})
+  page.drawText(status,{x:73,y:rowBottom+18,size:8,font:bold,color:navy})
+  page.drawText(description,{x:73,y:rowBottom+7,size:7.6,font:regular,color:muted})
+  page.drawText(index===0?'Recorded first': 'Timestamped when reached',{x:pageWidth-180,y:rowBottom+12,size:7.2,font:regular,color:index===0?teal:muted})
+  stageY=rowBottom-4
+ }
+ page.drawText('Additional states',{x:42,y:stageY-8,size:9,font:bold,color:navy})
+ drawWrapped(page,'QUOTE_REJECTED / RETURN_WITHOUT_REPAIR: quote declined or repair cancelled; PARTS_DELAYED: repair waits for parts; CUSTOMER_UNREACHABLE: team is waiting for customer; DISPUTED / LOST_OR_DAMAGED: service team review; WARRANTY_REOPENED: warranty follow-up reopened.',42,stageY-24,pageWidth-84,regular,7.5,muted,3)
+
  return document.save()
 }

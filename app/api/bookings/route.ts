@@ -41,7 +41,7 @@ export async function GET(req:NextRequest){
   const ids=(bookings||[]).map(booking=>booking.id)
   let events:unknown[]=[]
   if(ids.length){
-   const {data,error}=await db.from('booking_events').select('id,booking_id,kind,description,created_at').in('booking_id',ids).order('created_at',{ascending:true})
+   const {data,error}=await db.from('booking_events').select('id,booking_id,kind,description,created_at').in('booking_id',ids).order('created_at',{ascending:true}).order('id',{ascending:true})
    if(error)throw error
    events=data||[]
   }

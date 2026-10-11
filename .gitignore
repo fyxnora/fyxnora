@@ -1,5 +1,9 @@
 node_modules
 .next
+.next-dev
 .env.local
 .vercel
 *.tsbuildinfo
+.env.example
+tmp/pdfs/.venv/
+tmp/pdfs/rendered/

@@ -17,7 +17,7 @@ create table if not exists public.coverage_pincodes(id uuid primary key default 
 
 create table if not exists public.service_categories(id uuid primary key default gen_random_uuid(),name text not null unique,active boolean not null default true,sort_order int not null default 0);
 create table if not exists public.device_brands(id uuid primary key default gen_random_uuid(),category_id uuid not null references public.service_categories(id) on delete cascade,name text not null,active boolean not null default true,sort_order int not null default 0,unique(category_id,name));
-create table if not exists public.device_models(id uuid primary key default gen_random_uuid(),brand_id uuid not null references public.device_brands(id) on delete cascade,name text not null,model_code text,active boolean not null default true,sort_order int not null default 0,unique(brand_id,name));
+create table if not exists public.device_models(id uuid primary key default gen_random_uuid(),brand_id uuid not null references public.device_brands(id) on delete cascade,name text not null,model_code text,image_url text,active boolean not null default true,sort_order int not null default 0,unique(brand_id,name));
 create table if not exists public.repair_services(id uuid primary key default gen_random_uuid(),name text not null unique,description text not null default '',default_duration_minutes int not null default 60 check(default_duration_minutes>0),default_warranty_months int not null default 3 check(default_warranty_months>=0),active boolean not null default true,sort_order int not null default 0);
 create table if not exists public.model_repair_prices(id uuid primary key default gen_random_uuid(),model_id uuid not null references public.device_models(id) on delete cascade,repair_service_id uuid not null references public.repair_services(id) on delete cascade,price numeric(12,2) not null check(price>=0),discount_price numeric(12,2) check(discount_price>=0),doorstep_available boolean not null default true,active boolean not null default true,unique(model_id,repair_service_id));
 create table if not exists public.app_settings(id text primary key,value jsonb not null default '{}',updated_by uuid references public.profiles(id),updated_at timestamptz not null default now());
@@ -34,7 +34,7 @@ where lower(r.name)='bengaluru' and not exists(select 1 from public.partners whe
 create sequence if not exists public.booking_reference_seq start 1001;
 create table if not exists public.bookings(
  id uuid primary key default gen_random_uuid(),reference text not null unique default('FX-'||to_char(now(),'YYYY')||'-'||lpad(nextval('public.booking_reference_seq')::text,6,'0')),
- customer_id uuid not null references public.profiles(id),category text not null,brand text not null,model text not null,issue text not null,phone text not null,city text not null,pincode varchar(6) not null,address text not null,
+ customer_id uuid not null references public.profiles(id),category text not null,brand text not null,model text not null,issue text not null,phone text not null,city text not null,state text not null default '',country text not null default 'India',pincode varchar(6) not null,address text not null,location_latitude double precision,location_longitude double precision,
  model_id uuid references public.device_models(id),repair_service_ids uuid[] not null default '{}',estimated_amount numeric(12,2),preferred_date date,
  status text not null default 'BOOKED' check(status in('BOOKED','ASSIGNED','VISIT_SCHEDULED','PICKUP_VERIFIED','IN_TRANSIT','RECEIVED_AT_CENTRE','DIAGNOSIS','QUOTE_SENT','CUSTOMER_APPROVED','REPAIRING','QUALITY_CHECK','READY_FOR_DELIVERY','OUT_FOR_DELIVERY','DELIVERED','CLOSED','QUOTE_REJECTED','RETURN_WITHOUT_REPAIR','PARTS_DELAYED','CUSTOMER_UNREACHABLE','DISPUTED','LOST_OR_DAMAGED','WARRANTY_REOPENED')),
  partner_id uuid references public.partners(id),technician_id uuid references public.profiles(id),regional_id uuid references public.profiles(id),quoted_amount numeric(12,2) check(quoted_amount>=0),quote_details text,approved_amount numeric(12,2),approved_at timestamptz,created_at timestamptz not null default now(),updated_at timestamptz not null default now());
@@ -44,6 +44,11 @@ alter table public.bookings drop constraint if exists bookings_category_check;
 alter table public.bookings add column if not exists model_id uuid references public.device_models(id);
 alter table public.bookings add column if not exists repair_service_ids uuid[] not null default '{}';
 alter table public.bookings add column if not exists estimated_amount numeric(12,2);
+alter table public.bookings add column if not exists state text not null default '';
+alter table public.bookings add column if not exists country text not null default 'India';
+alter table public.bookings add column if not exists location_latitude double precision;
+alter table public.bookings add column if not exists location_longitude double precision;
+alter table public.device_models add column if not exists image_url text;
 
 create table if not exists public.booking_events(id uuid primary key default gen_random_uuid(),booking_id uuid not null references public.bookings(id) on delete cascade,actor_id uuid references public.profiles(id),kind text not null,description text not null default '',created_at timestamptz not null default now());
 create table if not exists public.device_condition_reports(id uuid primary key default gen_random_uuid(),booking_id uuid not null references public.bookings(id),recorded_by uuid references public.profiles(id),serial_masked text,accessories jsonb not null default '[]',condition_notes text,damage_notes text,pickup_otp_hash text,customer_verified_at timestamptz,created_at timestamptz not null default now());
@@ -75,7 +80,7 @@ insert into public.repair_services(name,description,sort_order) values
  ('Screen replacement','Cracked, damaged or unresponsive display',1),('Battery replacement','Battery drain, swelling or charging issues',2),('Charging repair','Charging port and power input faults',3),('Camera repair','Front or rear camera faults',4),('Speaker / microphone','Audio input and output faults',5),('Diagnosis','Complete device inspection',6)
 on conflict(name) do update set description=excluded.description,sort_order=excluded.sort_order;
 
--- Initial mobile catalogue based on publicly listed repair categories/models from HelloRe.
+-- Initial mobile catalogue with common device repair categories and models.
 -- Prices below are Fyxnora editable starting estimates, not copied competitor prices.
 insert into public.repair_services(name,description,default_duration_minutes,default_warranty_months,sort_order) values
  ('Standard Screen','Standard display replacement',60,6,10),('Premium OLED Screen','Premium OLED display replacement',60,12,11),('Touch & Glass','Front glass and touch repair',360,6,12),('Back Glass','Rear glass replacement',360,6,13),('Body Housing','Device body and housing replacement',360,6,14),('Back Camera','Rear camera module replacement',60,6,15),('Ear Speaker','Ear speaker replacement',45,6,16),('Loud Speaker','Loud speaker replacement',45,6,17),('Motherboard Repair','Board-level diagnosis and repair',1440,3,18),('Water / Liquid Damage','Liquid damage diagnosis and repair',1440,3,19),('Software / Network','Operating system, Wi-Fi, Bluetooth or network repair',360,3,20),('Other Issues','Advanced device diagnosis',1440,3,21)
