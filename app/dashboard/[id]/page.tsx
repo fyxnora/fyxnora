@@ -21,10 +21,11 @@ export default function Page(){
  for(const event of bookingEvents){
   if((steps as readonly string[]).includes(event.kind))eventByStage.set(event.kind,event)
  }
- const returnHref=sections.find(section=>section.role===profile?.role)?.href||'/dashboard'
+ const dashboardHref=sections.find(section=>section.role===profile?.role)?.href||'/dashboard'
+ const returnHref=profile?.role==='customer'?`${dashboardHref}#repairs`:`${dashboardHref}#${profile?.role==='admin'?'orders':'jobs'}`
 
  return <Shell role={profile?.role||'customer'}>
-  <div className="tracking-dashboard">
+  <div className="tracking-dashboard" id="tracking">
    <div className="tracking-header">
     <div>
      <span className="tracking-eyebrow">Repair tracking</span>

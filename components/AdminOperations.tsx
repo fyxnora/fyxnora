@@ -1,6 +1,7 @@
 'use client'
 import {useEffect,useState} from 'react'
 import {authedFetch} from '@/lib/client'
+import AdminContactSettings from '@/components/AdminContactSettings'
 
 type Provider='gmail'|'zoho'|'custom'
 type Smtp={provider:Provider;host:string;port:string;secure:boolean;username:string;password:string;from_name:string;from_email:string;reply_to:string;internal_recipients:string;cc_recipients:string;test_email:string;password_configured?:boolean;updated_at?:string}
@@ -90,5 +91,6 @@ export default function AdminOperations(){
     </div>
    </>}
   </form>
+  <AdminContactSettings/>
  </section>
 }

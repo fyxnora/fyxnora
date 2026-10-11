@@ -67,7 +67,7 @@
 /* Official logo in every role dashboard */
 .admin-wordmark,.ops-brand,.customer-side-brand{height:58px;padding:0 8px 18px;display:block}
 .admin-wordmark>span,.admin-wordmark>b,.ops-brand>span,.ops-brand>b,.customer-side-brand>span,.customer-side-brand>b{display:none!important}
-.admin-wordmark::after,.ops-brand::after,.customer-side-brand::after{content:"";display:block;width:100%;height:42px;background:url('/_next/image?url=%2Ffyxnora-logo.png&w=384&q=75') center/contain no-repeat;border-radius:8px}
+.admin-wordmark::after,.ops-brand::after,.customer-side-brand::after{content:"";display:block;width:100%;height:42px;background:url('/_next/image?url=%2Ffyxnora-logo-transparent.png&w=384&q=85') center/contain no-repeat;border-radius:8px}
 .ops-brand::after,.customer-side-brand::after{background-color:#fff}
 @media(max-width:1050px){.admin-wordmark{display:block;padding:0 0 18px}.admin-wordmark::after{height:42px}}
 @media(max-width:980px){.customer-side-brand{display:block;padding:2px 8px 14px;max-width:190px}.customer-side-brand::after{height:38px}.customer-side-nav{padding-top:12px}}

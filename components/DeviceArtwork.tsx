@@ -78,6 +78,6 @@ export default function DeviceArtwork({category,brand='',model='',imageUrl,class
  return <span className={`device-artwork device-artwork--${kind} ${className}`} style={{'--device-shell':shellColor,'--device-screen':screenColor} as React.CSSProperties} aria-hidden="true">
   <svg viewBox="0 0 200 170" focusable="false">{artwork[kind]}</svg>
   {imageUrl&&<img className="device-product-photo" src={imageUrl} alt="" loading="lazy" onError={event=>{event.currentTarget.style.display='none'}}/>}
-  {brand&&<span className="device-brand-mark" title={brand}><b>{brand.slice(0,1).toUpperCase()}</b>{logo&&<img src={logo} alt="" loading="lazy" onError={event=>{event.currentTarget.style.display='none'}}/>}</span>}
+  {brand&&<span className="device-brand-mark" title={brand} aria-label={`${brand} logo`}><b>{brand.slice(0,1).toUpperCase()}</b>{logo&&<img src={logo} alt="" loading="lazy" onLoad={event=>{const fallback=event.currentTarget.previousElementSibling;if(fallback instanceof HTMLElement)fallback.hidden=true}} onError={event=>{event.currentTarget.style.display='none'}}/>}</span>}
  </span>
 }

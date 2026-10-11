@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import {ArrowRight,CalendarDays,ChevronRight,Clock3,FileText,Headphones,Home,LifeBuoy,MapPin,PackageCheck,Plus,ShieldCheck,Sparkles,UserRound,WalletCards,Wrench} from 'lucide-react'
+import {ArrowRight,CalendarDays,ChevronRight,Clock3,FileText,LifeBuoy,MapPin,PackageCheck,Plus,ShieldCheck,Sparkles,UserRound,WalletCards,Wrench} from 'lucide-react'
 import {Notice,usePortal} from '@/components/Portal'
 import {money,pretty,steps} from '@/lib/constants'
 import {formatTrackingTimestamp,sortBookingEvents,trackingStage} from '@/lib/repair-tracking'
@@ -21,21 +21,15 @@ export default function Page(){
  const completed=orders.filter(order=>['DELIVERED','CLOSED'].includes(order.status))
 
  return <main className="customer-portal"><div className="shell customer-dashboard-shell">
-  <aside className="customer-side-nav">
-   <div className="customer-side-brand" role="img" aria-label="Fyxnora"/>
-   <p className="customer-nav-label">Workspace</p>
-   <nav aria-label="Customer dashboard navigation">
-    <a className="active" href="#overview"><Home/><span>Overview</span></a>
-    <a href="#repairs"><Wrench/><span>My repairs</span>{active.length>0&&<em>{active.length}</em>}</a>
-    <Link href="/book"><Plus/><span>Book repair</span></Link>
-    <button onClick={()=>document.querySelector<HTMLButtonElement>('[aria-label="Open account settings"]')?.click()}><UserRound/><span>My profile</span></button>
-    <a href="mailto:support@fyxnora.com"><LifeBuoy/><span>Help & support</span></a>
-   </nav>
-   <div className="customer-trust"><ShieldCheck/><div><b>Service protected</b><span>Secure handovers and transparent updates at every step.</span></div></div>
-  </aside>
+  <nav className="customer-workspace-nav" aria-label="Customer dashboard">
+   <a className="workspace-nav-card active" href="#repairs"><span><Wrench/></span><b>My repairs</b><em>{active.length}</em></a>
+   <Link className="workspace-nav-card" href="/book"><span><Plus/></span><b>Book a repair</b></Link>
+   <button className="workspace-nav-card" onClick={()=>document.querySelector<HTMLButtonElement>('[aria-label="Open account settings"]')?.click()}><span><UserRound/></span><b>My profile</b></button>
+   <Link className="workspace-nav-card" href="/contact"><span><LifeBuoy/></span><b>Help &amp; support</b></Link>
+  </nav>
 
   <div className="customer-dashboard-main" id="overview">
-   <section className="customer-head"><div className="customer-welcome"><span><Sparkles/> Customer dashboard</span><h1>Welcome back, {profile?.full_name?.split(' ')[0]||'there'}</h1><p>Manage your repairs, approvals and service history from one place.</p></div><Link className="button customer-book-button" href="/book"><Plus/> Book a repair</Link></section>
+   <section className="customer-head"><div className="customer-welcome"><span><Sparkles/> Customer dashboard</span><h1>Welcome back, {profile?.full_name?.split(' ')[0]||'there'}</h1><p>Manage your repairs, approvals and service history from one place.</p></div></section>
    <Notice loading={loading} error={error}/>
    {profile&&<>
     {awaiting.length>0&&<section className="customer-action-banner"><div className="action-banner-icon"><WalletCards/></div><div><small>Action required</small><h2>{awaiting.length===1?'A quotation is ready for your approval':`${awaiting.length} quotations are ready for approval`}</h2><p>Review the diagnosis and estimate to keep your repair moving.</p></div><Link href={`/dashboard/${awaiting[0].id}`}>Review quotation <ArrowRight/></Link></section>}
@@ -49,7 +43,7 @@ export default function Page(){
 
     <div className="customer-layout">
      <section id="repairs" className="customer-repairs-panel">
-      <div className="section-heading"><div><span>Repair activity</span><h2>My repair requests</h2><p>Track progress, review quotations and access service records.</p></div><Link href="/book" className="customer-text-link">New repair <Plus/></Link></div>
+      <div className="section-heading"><div><span>Repair activity</span><h2>My repair requests</h2><p>Track progress, review quotations and access service records.</p></div></div>
       {orders.length===0?<div className="customer-empty"><span><Wrench/></span><h3>Your repair journey starts here</h3><p>Select a device, choose the issue and receive an upfront estimate.</p><Link className="button" href="/book">Book your first repair <ArrowRight/></Link></div>:
        <div className="customer-orders">{orders.map((order,index)=>{
         const orderEvents=sortBookingEvents(events.filter(event=>event.booking_id===order.id))
@@ -70,9 +64,7 @@ export default function Page(){
      </section>
 
      <aside className="customer-right-rail">
-      <div className="customer-profile-card"><div className="profile-card-top"><div className="profile-monogram">{profile.full_name?.slice(0,1).toUpperCase()}</div><button aria-label="Edit profile" onClick={()=>document.querySelector<HTMLButtonElement>('[aria-label="Open account settings"]')?.click()}>Edit</button></div><h3>{profile.full_name}</h3><p>{profile.email}</p><span><UserRound/> Verified customer</span><dl><div><dt>Phone</dt><dd>{profile.phone||'Not added'}</dd></div><div><dt>Active repairs</dt><dd>{active.length}</dd></div></dl></div>
-      <div className="customer-quick-card"><div className="rail-card-title"><span>Quick actions</span><b>Self service</b></div><Link href="/book"><span><Plus/></span><div><b>Book a new repair</b><small>Get an instant estimate</small></div><ChevronRight/></Link><button onClick={()=>document.querySelector<HTMLButtonElement>('[aria-label="Open account settings"]')?.click()}><span><UserRound/></span><div><b>Update your profile</b><small>Contact and account details</small></div><ChevronRight/></button><a href="mailto:support@fyxnora.com"><span><Headphones/></span><div><b>Contact support</b><small>We are ready to help</small></div><ChevronRight/></a></div>
-      <div className="customer-help"><ShieldCheck/><div><h3>Protected at every step</h3><p>Diagnosis, approvals, payments, warranty and handovers stay recorded in your digital service card.</p></div></div>
+      <div className="customer-profile-card"><div className="profile-card-top"><div className="profile-monogram">{profile.full_name?.slice(0,1).toUpperCase()}</div></div><h3>{profile.full_name}</h3><p>{profile.email}</p><span><UserRound/> Verified customer</span><dl><div><dt>Phone</dt><dd>{profile.phone||'Not added'}</dd></div></dl></div>
       <div className="customer-doc-card"><FileText/><div><b>Service documents</b><span>Invoices and warranties appear inside completed repairs.</span></div></div>
      </aside>
     </div>
