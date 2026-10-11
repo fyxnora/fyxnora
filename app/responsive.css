@@ -1,0 +1,163 @@
+@media (max-width: 550px) {
+  .nav {
+    gap: 8px;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+  }
+
+  .brand img {
+    width: min(125px, 32vw);
+  }
+
+  .navlinks {
+    min-width: 0;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .navlinks > a:not(.button) {
+    white-space: nowrap;
+  }
+
+  .navlinks .button.small {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 10px;
+  }
+
+  .tablewrap {
+    max-width: 100%;
+  }
+
+  .customer-portal {
+    padding: 24px 0 50px;
+  }
+
+  .customer-head h1 {
+    font-size: clamp(26px, 8vw, 34px);
+  }
+
+  .customer-order {
+    padding: 15px;
+  }
+
+  .customer-profile-card dd {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 380px) {
+  .navlinks > a[href="/business"] {
+    display: none;
+  }
+
+  .navlinks .button.small {
+    padding: 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-topbar {
+    height: auto;
+    min-height: 60px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .admin-topbar > div:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-top-actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-panel {
+    padding: 15px;
+  }
+
+  .price-table {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .repair-grid button {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  .repair-grid button > b {
+    grid-column: 2;
+  }
+
+  .booking-actions {
+    flex-direction: column-reverse;
+  }
+
+  .booking-actions .button {
+    width: 100%;
+  }
+
+  .booking-summary,
+  .estimate-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ops-main > header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .ops-main > header h1 {
+    font-size: clamp(22px, 7vw, 27px);
+  }
+
+  .ops-profile dl {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .ops-profile dd {
+    margin-bottom: 8px;
+  }
+
+  .ops-job-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .customer-empty {
+    padding: 32px 18px;
+  }
+}
+
+@media (max-width: 380px) {
+  .booking-heading h1 {
+    font-size: 30px;
+    letter-spacing: -1px;
+  }
+
+  .booking-card h2 {
+    font-size: 22px;
+  }
+
+  .customer-profile-card dl {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-profile-card dd {
+    text-align: left;
+  }
+}
